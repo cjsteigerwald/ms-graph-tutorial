@@ -5,8 +5,11 @@ import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
 import Welcome from './Welcome';
 import 'bootstrap/dist/css/bootstrap.css';
+import withAuthProvider, { AuthComponentProps } from './AuthProvider';
+import Calendar from './Calendar';
+import NewEvent from './NewEvent';
 
-class App extends Component<any> {
+class App extends Component<AuthComponentProps> {
   render() {
     let error = null;
     if (this.props.error) {
@@ -21,7 +24,7 @@ class App extends Component<any> {
           <NavBar
             isAuthenticated={this.props.isAuthenticated}
             authButtonMethod={this.props.isAuthenticated ? this.props.logout : this.props.login}
-            user={this.props.user}/>
+            user={this.props.user} />
           <Container>
             {error}
             <Route exact path="/"
@@ -31,6 +34,18 @@ class App extends Component<any> {
                   user={this.props.user}
                   authButtonMethod={this.props.login} />
               } />
+            <Route exact path="/calendar"
+              render={(props) =>
+                this.props.isAuthenticated ?
+                  <Calendar {...props} /> :
+                  <Redirect to="/" />
+              } />
+            <Route exact path="/newevent"
+              render={(props) =>
+                this.props.isAuthenticated ?
+                  <NewEvent {...props} /> :
+                  <NewEvent {...props} />
+              } />
           </Container>
         </div>
       </Router>
@@ -38,4 +53,4 @@ class App extends Component<any> {
   }
 }
 
-export default App;
+export default withAuthProvider(App);
